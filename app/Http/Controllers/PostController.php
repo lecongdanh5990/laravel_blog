@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Category;
+use App\Post;
+use Session;
 
 class PostController extends Controller
 {
@@ -14,7 +16,10 @@ class PostController extends Controller
      */
     public function index()
     {
-        //
+        // $posts = ;
+        // dd($posts);
+        //$categories = Category::all();
+        return view('admin.post.index')->with('posts', Post::all());
     }
 
     public function create()
@@ -31,6 +36,29 @@ class PostController extends Controller
             'content' => 'required',
             'category_id' => 'required',
         ]);
+        //nhan hinh ma nguoii ta gui len
+        $newFeatured=$request->featured;
+        //doi ten sao cho khong bi trung trong database
+        $newFeaturedName=time().$newFeatured->getClientOriginalName();
+        //tien hanh luu file theo cach thu cong
+        $newFeatured->move('uploads/post', $newFeaturedName);
+
+        // $newPost=new Post();
+        // $newPost->title=$request->title;
+        // $newPost->featured = $newFeaturedName;
+        // $newPost->content = $request->content;
+        // $newPost->category_id = $request->category_id;
+
+        //lam cach moi nhanh hon ne
+        $post=Post::create([
+            'title'=>$request->title,
+            'featured' => 'uploads/post/'.$newFeaturedName,
+            'content' => $request->content,
+            'category_id' => $request->category_id,
+            'slug'=>str_slug($request->title)
+        ]);
+
+        Session::flash('success',"Post was created successfully");
     }
 
     /**

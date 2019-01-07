@@ -36,7 +36,7 @@ class CategoryController extends Controller
         $newCategory->name=$request->name;
         $newCategory->save();
         Session::flash('success','Create successfuly');
-        return redirect()->back();
+        return redirect()->route('category.index');
     }
 
     /**
